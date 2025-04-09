@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعراض الملفات - عالم الوورد المجاني للتعليم الجزائري</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* نسخ أنماط الرأس والتذييل من الملفات الأخرى */
+        header {
+            background: linear-gradient(135deg, #026937 0%, #1A8F5E 100%);
+            padding: 30px 0 0;
+            border-bottom: 3px solid #e9ecef;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+        }
+
+        .main-title p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            top: 15px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0;
+            background-color: white;
+            position: relative;
+        }
+
+        nav a {
+            padding: 18px 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-direction: row-reverse;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+            justify-content: center;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        /* أنماط صفحة استعراض الملفات */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .content h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60%;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        /* أنماط مسار التنقل (breadcrumbs) */
+        .breadcrumbs {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .breadcrumbs a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumbs .separator {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        /* أنماط قائمة الملفات والمجلدات */
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .file-item {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .file-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .file-item i {
+            font-size: 24px;
+            color: var(--accent-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .file-item.folder i {
+            color: var(--secondary-color);
+        }
+
+        .file-item .file-name {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .file-item.document i.fa-file-pdf { color: #e74c3c; }
+        .file-item.document i.fa-file-word { color: #3498db; }
+        .file-item.document i.fa-file-powerpoint { color: #e67e22; }
+        .file-item.document i.fa-file-excel { color: #2ecc71; }
+        .file-item.document i.fa-file-image { color: #9b59b6; }
+        .file-item.document i.fa-file-archive { color: #f39c12; }
+        .file-item.document i.fa-file-alt { color: #7f8c8d; }
+
+        /* رسالة التحميل والأخطاء */
+        .message {
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+        }
+
+        .loading {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .error {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent-color);
+        }
+
+        .empty {
+            background-color: rgba(127, 140, 141, 0.1);
+            color: #7f8c8d;
+        }
+
+        /* الترويسة (القسم العلوي) */
+        .section-header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .section-header .description {
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* أنماط التذييل */
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .footer-content p {
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        /* تجاوب التصميم */
+        @media (max-width: 768px) {
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+            
+            nav a {
+                flex: 1 1 40%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-title h1 {
+                font-size: 1.5rem;
+            }
+
+            nav a {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="main-title">
+                <h1>عالم الوورد المجاني للتعليم الجزائري</h1>
+                <p>موقع تعليمي متكامل لجميع الأطوار التعليمية</p>
+            </div>
+        </div>
+        <div class="nav-container">
+            <nav>
+                <a href="index.html">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+                <a href="primary-school.html" id="primary-link">
+                    <i class="fas fa-child"></i>
+                    الطور الابتدائي
+                </a>
+                <a href="middle-school.html" id="middle-link">
+                    <i class="fas fa-user-graduate"></i>
+                    الطور المتوسط
+                </a>
+                <a href="secondary-school.html" id="secondary-link">
+                    <i class="fas fa-user-tie"></i>
+                    الطور الثانوي
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+        </div>
+
+        <div class="section-header">
+            <div>
+                <h3 id="current-directory">استعراض الملفات</h3>
+                <p class="description" id="directory-description">يرجى اختيار مجلد لاستعراض محتوياته</p>
+            </div>
+        </div>
+
+        <div id="file-container">
+            <div class="message loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                جاري تحميل الملفات...
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>جميع الحقوق محفوظة © عالم الوورد المجاني للتعليم الجزائري 2025</p>
+            <div class="social-links">
+                <a href="https://facebook.com/" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                    فيسبوك
+                </a>
+                <a href="https://youtube.com/" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                    يوتيوب
+                </a>
+                <a href="mailto:contact@example.com">
+                    <i class="fas fa-envelope"></i>
+                    تواصل معنا
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // الحصول على معلومات المجلد الحالي من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPath = urlParams.get('path') || '';
+        const pathSegments = currentPath ? currentPath.split('/') : [];
+        
+        // تعيين العنصر النشط في القائمة
+        if (currentPath.startsWith('الطور الإبتدائي')) {
+            document.getElementById('primary-link').classList.add('active');
+        } else if (currentPath.startsWith('الطور المتوسط')) {
+            document.getElementById('middle-link').classList.add('active');
+        } else if (currentPath.startsWith('الطور الثانوي')) {
+            document.getElementById('secondary-link').classList.add('active');
+        }
+        
+        // إنشاء مسار التنقل (breadcrumbs)
+        function updateBreadcrumbs() {
+            const breadcrumbsContainer = document.getElementById('breadcrumbs');
+            breadcrumbsContainer.innerHTML = '<a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>';
+            
+            let currentBuildPath = '';
+            
+            for (let i = 0; i < pathSegments.length; i++) {
+                const segment = pathSegments[i];
+                if (!segment) continue;
+                
+                breadcrumbsContainer.innerHTML += '<span class="separator">/</span>';
+                
+                currentBuildPath += (currentBuildPath ? '/' : '') + segment;
+                
+                if (i === pathSegments.length - 1) {
+                    // آخر جزء (المجلد الحالي)
+                    breadcrumbsContainer.innerHTML += `<span>${segment}</span>`;
+                } else {
+                    // أجزاء المسار السابقة (روابط)
+                    breadcrumbsContainer.innerHTML += `<a href="file-browser.html?path=${encodeURIComponent(currentBuildPath)}">${segment}</a>`;
+                }
+            }
+        }
+        
+        // تحديث عنوان المجلد الحالي
+        function updateCurrentDirectory() {
+            const directoryTitle = document.getElementById('current-directory');
+            const directoryDescription = document.getElementById('directory-description');
+            
+            if (pathSegments.length > 0 && pathSegments[pathSegments.length - 1]) {
+                directoryTitle.textContent = pathSegments[pathSegments.length - 1];
+                
+                // إضافة وصف بناءً على نوع المجلد
+                if (currentPath.includes('اختبارات')) {
+                    directoryDescription.textContent = 'نماذج من الاختبارات والامتحانات';
+                } else if (currentPath.includes('دروس')) {
+                    directoryDescription.textContent = 'شروحات ودروس تعليمية';
+                } else if (currentPath.includes('مذكرات')) {
+                    directoryDescription.textContent = 'مذكرات وملخصات دراسية';
+                } else if (currentPath.includes('تمارين')) {
+                    directoryDescription.textContent = 'تمارين وتدريبات للممارسة';
+                } else if (currentPath.includes('وثائق الأستاذ')) {
+                    directoryDescription.textContent = 'وثائق ومستندات خاصة بالأساتذة';
+                } else {
+                    directoryDescription.textContent = 'استعراض محتويات المجلد';
+                }
+            } else {
+                directoryTitle.textContent = 'استعراض الملفات';
+                directoryDescription.textContent = 'يرجى اختيار مجلد لاستعراض محتوياته';
+            }
+        }
+        
+        // الدالة الرئيسية لعرض محتويات المجلد
+        async function displayDirectoryContents() {
+            const fileContainer = document.getElementById('file-container');
+            
+            // إذا كنا في الجذر، عرض الأطوار الرئيسية
+            if (!currentPath) {
+                const rootFolders = [
+                    { name: 'الطور الإبتدائي', icon: 'fa-child' },
+                    { name: 'الطور المتوسط', icon: 'fa-user-graduate' },
+                    { name: 'الطور الثانوي', icon: 'fa-user-tie' }
+                ];
+                
+                displayFolders(rootFolders);
+                return;
+            }
+            
+            try {
+                // محاكاة جلب البيانات (في التطبيق الفعلي، ستقوم بجلب البيانات من GitHub API)
+                // سنستخدم في هذا المثال قاموس للبيانات المحلية بناءً على الهيكلة المقدمة
+                
+                // تأخير مصطنع لمحاكاة جلب البيانات من الخادم
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // الحصول على محتويات المجلد بناءً على المسار الحالي
+                const directoryContents = getDirectoryContents(currentPath);
+                
+                if (directoryContents.folders.length === 0 && directoryContents.files.length === 0) {
+                    fileContainer.innerHTML = `
+                        <div class="message empty">
+                            <i class="fas fa-folder-open"></i>
+                            هذا المجلد فارغ
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // عرض محتويات المجلد
+                displayFolders(directoryContents.folders);
+                displayFiles(directoryContents.files);
+            } catch (error) {
+                console.error('حدث خطأ أثناء جلب محتويات المجلد:', error);
+                fileContainer.innerHTML = `
+                    <div class="message error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        حدث خطأ أثناء جلب محتويات المجلد. يرجى المحاولة مرة أخرى.
+                    </div>
+                `;
+            }
+        }
+        
+        // عرض المجلدات
+        function displayFolders(folders) {
+            const fileContainer = document.getElementById('file-container');
+            fileContainer.innerHTML = ''; // مسح المحتوى الحالي
+            
+            // إذا كانت هناك مجلدات
+            if (folders.length > 0) {
+                const fileList = document.createElement('div');
+                fileList.className = 'file-list';
+                
+                folders.forEach(folder => {
+                    const folderItem = document.createElement('div');
+                    folderItem.className = 'file-item folder';
+                    
+                    // استخدام أيقونة خاصة إذا تم تحديدها، وإلا استخدام أيقونة مجلد افتراضية
+                    const iconClass = folder.icon ? `fas ${folder.icon}` : 'fas fa-folder';
+                    
+                    folderItem.innerHTML = `
+                        <i class="${iconClass}"></i>
+                        <span class="file-name">${folder.name}</span>
+                    `;
+                    
+                    folderItem.addEventListener('click', () => {
+                        const newPath = currentPath ? `${currentPath}/${folder.name}` : folder.name;
+                        window.location.href = `file-browser.html?path=${encodeURIComponent(newPath)}`;
+                    });
+                    
+                    fileList.appendChild(folderItem);
+                });
+                
+                fileContainer.appendChild(fileList);
+            }
+        }
+        
+        // عرض الملفات (عندما تكون في مجلد المستوى الأخير)
+        function displayFiles(files) {
+            const fileContainer = document.getElementById('file-container');
+            
+            // إذا كان هناك ملفات لعرضها وليس هناك محتوى سابق (مثل المجلدات)
+            if (files.length > 0 && !fileContainer.querySelector('.file-list')) {
+                const fileList = document.createElement('div');
+                fileList.className = 'file-list';
+                fileContainer.appendChild(fileList);
+            } else if (files.length > 0) {
+                // إذا كان هناك بالفعل قائمة ملفات (من المجلدات)، استخدمها
+                var fileList = fileContainer.querySelector('.file-list');
+            }
+            
+            if (files.length > 0) {
+                files.forEach(file => {
+                    // تحديد أيقونة الملف بناءً على الامتداد
+                    let iconClass = 'fa-file-alt';
+                    if (file.type === 'pdf') iconClass = 'fa-file-pdf';
+                    else if (file.type === 'doc' || file.type === 'docx') iconClass = 'fa-file-word';
+                    else if (file.type === 'ppt' || file.type === 'pptx') iconClass = 'fa-file-powerpoint';
+                    else if (file.type === 'xls' || file.type === 'xlsx') iconClass = 'fa-file-excel';
+                    else if (file.type === 'jpg' || file.type === 'png' || file.type === 'gif') iconClass = 'fa-file-image';
+                    else if (file.type === 'zip' || file.type === 'rar') iconClass = 'fa-file-archive';
+                    
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item document';
+                    fileItem.innerHTML = `
+                        <i class="fas ${iconClass}"></i>
+                        <span class="file-name">${file.name}</span>
+                    `;
+                    
+                    fileItem.addEventListener('click', () => {
+                        // فتح الملف في نافذة جديدة
+                        const fileUrl = `https://github.com/linnkou/majani/raw/main/educationdzwordland/${currentPath}/${file.name}`;
+                        window.open(fileUrl, '_blank');
+                    });
+                    
+                    fileList.appendChild(fileItem);
+                });
+            }
+        }
+        
+        // محاكاة الحصول على محتويات المجلد من GitHub
+        // في التطبيق الفعلي، ستستخدم GitHub API
+        function getDirectoryContents(path) {
+            // سننشئ بيانات تستند إلى الهيكلة المقدمة
+            
+            // بيانات المجلدات الرئيسية
+            if (!path) {
+                return {
+                    folders: [
+                        { name: 'الطور الإبتدائي', icon: 'fa-child' },
+                        { name: 'الطور المتوسط', icon: 'fa-user-graduate' },
+                        { name: 'الطور الثانوي', icon: 'fa-user-tie' }
+                    ],
+                    files: []
+                };
+            }
+            
+            // بيانات الطور الابتدائي
+            if (path === 'الطور الإبتدائي') {
+                return {
+                    folders: [
+                        { name: 'القسم التحضيري' },
+                        { name: 'السنة أولى ابتدائي' },
+                        { name: 'السنة الثانية ابتدائي' },
+                        { name: 'السنة الثالثة ابتدائي' },
+                        { name: 'السنة الرابعة ابتدائي' },
+                        { name: 'السنة الخامسة ابتدائي' }
+                    ],
+                    files: []
+                };
+            }
+            
+            // بيانات الطور المتوسط
+            if (path === 'الطور المتوسط') {
+                return {
+                    folders: [
+                        { name: 'السنة أولى متوسط' },
+                        { name: 'السنة الثانية متوسط' },
+                        { name: 'السنة الثالثة متوسط' },
+                        { name: 'السنة الرابعة متوسط' }
+                    ],
+                    files: []
+                };
+            }
+            
+            // بيانات الطور الثانوي
+            if (path === 'الطور الثانوي') {
+                return {
+                    folders: [
+                        { name: 'التاريخ و الجغرافيا الثالثة ثانوي - جميع الشعب' },
+                        { name: 'الرياضيات الأولى ثانوي - ج م آداب' },
+                        { name: 'الرياضيات الأولى ثانوي - ج م علوم و تكنولوجيا' },
+                        // إضافة المزيد من المجلدات حسب الهيكلة...
+                    ],
+                    files: []
+                };
+            }
+            
+            // المستويات الأخرى - سنستخدم بعض المجلدات من الهيكلة المقدمة
+            
+            // مثال لمحتويات مجلد السنة أولى ابتدائي
+            if (path === 'الطور الإبتدائي/السنة أولى ابتدائي') {
+                return {
+                    folders: [
+                        { name: 'التربية الإسلامية الأولى ابتدائي' },
+                        { name: 'التربية العلمية و التكنولوجية الأولى ابتدائي' },
+                        { name: 'التربية المدنية الأولى ابتدائي' },
+                        { name: 'الرياضيات الأولى ابتدائي' },
+                        { name: 'اللغة العربية الأولى ابتدائي' },
+                        { name: 'رسم _ أشغال الأولى ابتدائي' },
+                        { name: 'محفوظات _ موسيقى الأولى ابتدائي' }
+                    ],
+                    files: []
+                };
+            }
+            
+            // مثال لمحتويات مجلد الرياضيات السنة الأولى ابتدائي
+            if (path === 'الطور الإبتدائي/السنة أولى ابتدائي/الرياضيات الأولى ابتدائي') {
+                return {
+                    folders: [
+                        { name: 'الاختبارات' },
+                        { name: 'الفروض' },
+                        { name: 'الواجبات المنزلية' },
+                        { name: 'دروس و تمارين' },
+                        { name: 'مذكرات' },
+                        { name: 'وثائق الأستاذ' }
+                    ],
+                    files: []
+                };
+            }
+            
+            // مثال لمحتويات مجلد مذكرات الرياضيات السنة الأولى ابتدائي
+            if (path === 'الطور الإبتدائي/السنة أولى ابتدائي/الرياضيات الأولى ابتدائي/مذكرات') {
+                return {
+                    folders: [],
+                    files: [
+                        { name: 'مذكرة الأعداد من 1 إلى 9.pdf', type: 'pdf' },
+                        { name: 'مذكرة الأعداد من 10 إلى 19.pdf', type: 'pdf' },
+                        { name: 'مذكرة الجمع والطرح.docx', type: 'docx' },
+                        { name: 'مذكرة الأشكال الهندسية.pdf', type: 'pdf' },
+                        { name: 'برنامج سنوي للرياضيات.xlsx', type: 'xlsx' }
+                    ]
+                };
+            }
+            
+            // إذا لم يتم العثور على المسار المحدد، عرض رسالة خطأ
+            return { folders: [], files: [] };
+        }
+        
+        // تحديث واجهة المستخدم
+        updateBreadcrumbs();
+        updateCurrentDirectory();
+        displayDirectoryContents();
+    </script>
+</body>
+</html>

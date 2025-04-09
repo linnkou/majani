@@ -1956,6 +1956,51 @@
                 }
             });
         });
+        // إضافة معالجات الأحداث لعناصر التصنيف
+document.addEventListener('DOMContentLoaded', function() {
+    // حدد جميع عناصر التصنيف
+    const categoryItems = document.querySelectorAll('.category-item');
+    
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // استخراج المعلومات المطلوبة
+            const categoryName = this.textContent.trim();
+            const subjectName = this.closest('.subject-item')
+                .querySelector('.subject-header span').textContent.trim();
+            const schoolYear = this.closest('.school-year')
+                .querySelector('.school-year-header h3').textContent.trim();
+            
+            // تحديد المجلد الرئيسي بناءً على الصفحة الحالية
+            let mainFolder = '';
+            if (window.location.pathname.includes('primary-school')) {
+                mainFolder = 'الطور الإبتدائي';
+            } else if (window.location.pathname.includes('middle-school')) {
+                mainFolder = 'الطور المتوسط';
+            } else if (window.location.pathname.includes('secondary-school')) {
+                mainFolder = 'الطور الثانوي';
+            }
+            
+            // بناء مسار المجلد
+            let folderPath = '';
+            
+            // الطور الابتدائي له بنية خاصة
+            if (mainFolder === 'الطور الإبتدائي') {
+                folderPath = `${mainFolder}/${schoolYear}/${subjectName} ${schoolYear}/${categoryName}`;
+            } 
+            // الطور المتوسط له بنية خاصة
+            else if (mainFolder === 'الطور المتوسط') {
+                folderPath = `${mainFolder}/${schoolYear}/${subjectName} ${schoolYear}/${categoryName}`;
+            }
+            // الطور الثانوي له بنية مختلفة
+            else if (mainFolder === 'الطور الثانوي') {
+                folderPath = `${mainFolder}/${subjectName}/${categoryName}`;
+            }
+            
+            // الانتقال إلى صفحة استعراض الملفات مع تمرير المسار
+            window.location.href = `file-browser.html?path=${encodeURIComponent(folderPath)}`;
+        });
+    });
+});
     </script>
 </body>
 </html>

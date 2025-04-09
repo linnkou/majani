@@ -48,58 +48,205 @@
       margin-top: 30px;
       font-size: 18px;
     }
+    .breadcrumb {
+      background-color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .breadcrumb a {
+      margin: 0 5px;
+    }
+    .error-details {
+      background-color: #fff3cd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      border-left: 4px solid #ffc107;
+    }
+    .back-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+      display: inline-block;
+    }
+    .back-button:hover {
+      background-color: #0069d9;
+    }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 30px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <h2>📁 استعراض الملفات - التعليم الجزائري</h2>
-  <ul id="file-list"></ul>
+  
+  <div class="breadcrumb" id="breadcrumb-container">
+    <a href="file-browser.html"><i class="fas fa-home"></i> الرئيسية</a>
+  </div>
+  
+  <div id="loader" class="loader"></div>
+  <ul id="file-list" style="display: none;"></ul>
   <p id="empty-message" class="empty-msg" style="display: none;">📭 لا توجد ملفات في هذا المجلد.</p>
+  <div id="error-container" class="error-details" style="display: none;"></div>
+  
+  <button class="back-button" id="back-button" style="display: none;">العودة</button>
 
   <script>
     const username = "linnkou";
     const repo = "majani";
     const branch = "main";
+    const rootFolder = "educationdzwordland"; // إضافة المجلد الرئيسي
 
+    // استخراج المسار من عنوان URL
     const urlParams = new URLSearchParams(window.location.search);
     const path = urlParams.get("path") || "";
-
-    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+    
+    // إضافة المجلد الرئيسي إلى المسار
+    const fullPath = path ? `${rootFolder}/${path}` : rootFolder;
+    const encodedPath = fullPath.split("/").map(encodeURIComponent).join("/");
     const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${encodedPath}?ref=${branch}`;
-
-    fetch(apiUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error("404");
-        return res.json();
-      })
-      .then((data) => {
-        const list = document.getElementById("file-list");
-        const filtered = data.filter(item => item.name !== ".gitkeep");
-        if (filtered.length === 0) {
-          document.getElementById("empty-message").style.display = "block";
-          return;
-        }
-        filtered.forEach((item) => {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-
-          if (item.type === "dir") {
-            const subPath = `${path}/${item.name}`;
-            link.href = `file-browser.html?path=${encodeURIComponent(subPath)}`;
-            link.innerHTML = `<span class="icon">📁</span> ${item.name}`;
-          } else {
-            link.href = item.download_url;
-            link.target = "_blank";
-            link.innerHTML = `<span class="icon">📄</span> ${item.name}`;
-          }
-
-          li.appendChild(link);
-          list.appendChild(li);
+    
+    // تحديث مسار التنقل (Breadcrumb)
+    function updateBreadcrumb() {
+      const container = document.getElementById("breadcrumb-container");
+      container.innerHTML = '<a href="file-browser.html"><i class="fas fa-home"></i> الرئيسية</a>';
+      
+      if (path) {
+        const parts = path.split('/');
+        let currentPath = '';
+        
+        parts.forEach((part, index) => {
+          currentPath += (index > 0 ? '/' : '') + part;
+          container.innerHTML += ` / <a href="file-browser.html?path=${encodeURIComponent(currentPath)}">${part}</a>`;
         });
-      })
-      .catch((err) => {
-        document.getElementById("empty-message").textContent = "📭 لا توجد ملفات في هذا المجلد أو حدث خطأ.";
-        document.getElementById("empty-message").style.display = "block";
-      });
+      }
+    }
+    
+    // تنفيذ التنقل إلى الخلف
+    document.getElementById("back-button").addEventListener("click", function() {
+      const pathParts = path.split('/');
+      pathParts.pop(); // إزالة آخر قسم من المسار
+      const newPath = pathParts.join('/');
+      
+      // إعادة التوجيه إلى المستوى الأعلى
+      if (newPath) {
+        window.location.href = `file-browser.html?path=${encodeURIComponent(newPath)}`;
+      } else {
+        window.location.href = "file-browser.html"; // العودة إلى الصفحة الرئيسية
+      }
+    });
+    
+    // تحميل محتوى المجلد
+    function loadDirectoryContent() {
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 404) {
+              throw new Error("المجلد غير موجود. يرجى التحقق من المسار.");
+            }
+            throw new Error(`خطأ في الاستجابة (${response.status})`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("file-list").style.display = "block";
+          
+          const list = document.getElementById("file-list");
+          list.innerHTML = ""; // مسح أي محتوى سابق
+          
+          // تصفية الملفات (استبعاد .gitkeep)
+          const filtered = Array.isArray(data) ? data.filter(item => item.name !== ".gitkeep") : [];
+          
+          if (filtered.length === 0) {
+            document.getElementById("empty-message").style.display = "block";
+            return;
+          }
+          
+          // عرض زر العودة إذا كنا في مجلد فرعي
+          if (path) {
+            document.getElementById("back-button").style.display = "inline-block";
+          }
+          
+          // ترتيب العناصر: المجلدات أولاً ثم الملفات
+          const sortedItems = [...filtered].sort((a, b) => {
+            if (a.type === b.type) return a.name.localeCompare(b.name);
+            return a.type === "dir" ? -1 : 1;
+          });
+          
+          // إنشاء عناصر القائمة
+          sortedItems.forEach(item => {
+            const li = document.createElement("li");
+            const link = document.createElement("a");
+            
+            if (item.type === "dir") {
+              // المسار للمجلد الفرعي
+              const subPath = path ? `${path}/${item.name}` : item.name;
+              link.href = `file-browser.html?path=${encodeURIComponent(subPath)}`;
+              link.innerHTML = `<span class="icon">📁</span> ${item.name}`;
+            } else {
+              // رابط مباشر للملف
+              link.href = item.download_url;
+              link.target = "_blank";
+              
+              // تحديد أيقونة مناسبة حسب نوع الملف
+              let icon = "📄";
+              const ext = item.name.split('.').pop().toLowerCase();
+              if (["pdf"].includes(ext)) icon = "📕";
+              if (["doc", "docx"].includes(ext)) icon = "📘";
+              if (["xls", "xlsx"].includes(ext)) icon = "📊";
+              if (["ppt", "pptx"].includes(ext)) icon = "📋";
+              if (["jpg", "jpeg", "png", "gif"].includes(ext)) icon = "🖼️";
+              
+              link.innerHTML = `<span class="icon">${icon}</span> ${item.name}`;
+            }
+            
+            li.appendChild(link);
+            list.appendChild(li);
+          });
+        })
+        .catch(err => {
+          console.error("حدث خطأ:", err);
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("empty-message").style.display = "block";
+          document.getElementById("empty-message").textContent = "📭 لا توجد ملفات في هذا المجلد أو حدث خطأ.";
+          
+          // عرض تفاصيل الخطأ في وحدة منفصلة
+          const errorContainer = document.getElementById("error-container");
+          errorContainer.style.display = "block";
+          errorContainer.innerHTML = `
+            <strong>تفاصيل الخطأ:</strong><br>
+            ${err.message}<br><br>
+            <strong>المسار الحالي:</strong> ${fullPath}<br>
+            <em>تأكد من وجود المجلد والملفات في المستودع</em>
+          `;
+          
+          // عرض زر العودة دائمًا في حالة الخطأ
+          document.getElementById("back-button").style.display = "inline-block";
+        });
+    }
+    
+    // تحديث مسار التنقل وتحميل المحتوى عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", function() {
+      updateBreadcrumb();
+      loadDirectoryContent();
+    });
   </script>
 </body>
 </html>

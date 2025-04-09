@@ -1305,6 +1305,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const schoolYear = this.closest('.school-year')
                 .querySelector('.school-year-header h3').textContent.trim();
             
+            // بناء مسار المجلد حسب هيكل المستودع الفعلي
+            // المسار سيكون: الطور الثانوي/السنة (الأولى أو الثانية أو الثالثة)/المادة/الفئة
+            let folderPath = `الطور الثانوي/${schoolYear}/${subjectName}/${categoryName}`;
+            
+            // تنظيف المسار من الرموز غير المرغوبة (إذا وجدت)
+            folderPath = folderPath.replace(/\s-\s/g, '/');
+            
+            console.log("المسار المستهدف:", folderPath);
+      
+            
             // تحديد المجلد الرئيسي بناءً على الصفحة الحالية
             let mainFolder = '';
             if (window.location.pathname.includes('primary-school')) {

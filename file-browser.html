@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>استعراض الملفات</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; padding: 20px; direction: rtl; }
+    h1 { color: #007bff; text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 10px 0; background: #fff; padding: 10px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    a { color: #007bff; text-decoration: none; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+    .empty { text-align: center; color: #999; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <h1>📁 استعراض الملفات</h1>
+  <ul id="fileList"></ul>
+  <p class="empty" id="emptyMessage" style="display:none;">📭 لا توجد ملفات في هذا المجلد أو حدث خطأ.</p>
+
+  <script>
+    const username = "linnkou";
+    const repo = "majani";
+    const branch = "main";
+
+    const params = new URLSearchParams(window.location.search);
+    const path = params.get("path") || "";
+
+    const fullPath = "educationdzwordland/" + path;
+    const encodedPath = fullPath.split("/").map(encodeURIComponent).join("/");
+    const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${encodedPath}?ref=${branch}`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const fileList = document.getElementById("fileList");
+        const emptyMessage = document.getElementById("emptyMessage");
+
+        if (!Array.isArray(data)) {
+          emptyMessage.style.display = "block";
+          return;
+        }
+
+        const visibleFiles = data.filter(item => item.name !== ".gitkeep");
+
+        if (visibleFiles.length === 0) {
+          emptyMessage.style.display = "block";
+          return;
+        }
+
+        visibleFiles.forEach(item => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = item.type === "dir"
+            ? `file-browser.html?path=${path}/${item.name}`
+            : item.download_url;
+          link.textContent = item.name;
+          link.target = "_blank";
+          li.appendChild(link);
+          fileList.appendChild(li);
+        });
+      })
+      .catch(error => {
+        document.getElementById("emptyMessage").style.display = "block";
+        console.error("حدث خطأ:", error);
+      });
+  </script>
+</body>
+</html>

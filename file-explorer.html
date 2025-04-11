@@ -1,8 +1,3 @@
-<script>
-  if (!localStorage.getItem("loggedUser")) {
-    window.location.href = "login.html";
-  }
-</script>
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -21,6 +16,16 @@
   </style>
 </head>
 <body>
+
+<script>
+  const user = localStorage.getItem("loggedUser");
+  const isAdmin = localStorage.getItem("isAdmin");
+
+  if (!user && isAdmin !== "true") {
+    window.location.href = "access.html";
+  }
+</script>
+
   <h2>📁 استعراض الملفات التعليمية</h2>
 
   <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملف..." onkeyup="filterFiles()" />

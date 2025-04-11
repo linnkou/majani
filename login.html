@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,41 +5,81 @@
   <title>تسجيل الدخول</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --primary-color: #0072ff;
+      --primary-hover: #005fcc;
+      --card-bg-light: white;
+      --text-color-light: #333;
+      --input-border-light: #ccc;
+      --gradient-start: #00c6ff;
+      --gradient-end: #0072ff;
+      --error-color: crimson;
+      --warning-color: #ff9800;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #5D5CDE;
+        --primary-hover: #4a49c0;
+        --card-bg-light: #242424;
+        --text-color-light: #e0e0e0;
+        --input-border-light: #444;
+        --gradient-start: #3a3984;
+        --gradient-end: #5D5CDE;
+      }
+    }
+    
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to left, #00c6ff, #0072ff);
+      background: linear-gradient(to left, var(--gradient-start), var(--gradient-end));
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      color: #333;
+      color: var(--text-color-light);
     }
     .container {
-      background: white;
+      background: var(--card-bg-light);
       border-radius: 12px;
       padding: 30px;
       max-width: 400px;
       width: 100%;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
     }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      color: #0072ff;
+      color: var(--primary-color);
     }
     input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: 1px solid #ccc;
+      border: 1px solid var(--input-border-light);
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 16px;
+      background-color: transparent;
+      color: var(--text-color-light);
+      box-sizing: border-box;
     }
     button {
       width: 100%;
       padding: 12px;
-      background-color: #0072ff;
+      background-color: var(--primary-color);
       color: white;
       font-size: 16px;
       border: none;
@@ -49,11 +88,29 @@
       transition: background-color 0.3s;
     }
     button:hover {
-      background-color: #005fcc;
+      background-color: var(--primary-hover);
     }
     #msg {
       text-align: center;
       margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .error {
+      color: var(--error-color);
+    }
+    .warning {
+      color: var(--warning-color);
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -66,14 +123,28 @@
       <button type="submit">دخول</button>
     </form>
     <p id="msg"></p>
+    <a href="index.html" class="back-link">العودة للصفحة الرئيسية</a>
   </div>
 
   <script>
+    // التحقق مما إذا كان المستخدم مسجل دخول بالفعل
+    window.onload = function() {
+      const isAdmin = localStorage.getItem("isAdmin") === "true";
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+      
+      if (isAdmin || loggedUser) {
+        // إذا كان المستخدم مسجل دخول، التوجيه إلى الصفحة الرئيسية
+        window.location.href = "home.html";
+      }
+    }
+    
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
       const msg = document.getElementById('msg');
+      
+      msg.className = "";
 
       if (username === "admin" && password === "admin123") {
         localStorage.setItem("isAdmin", "true");
@@ -82,7 +153,8 @@
           localStorage.setItem("github_token", token);
           window.location.href = "home.html";
         } else {
-          msg.innerText = "❌ يجب إدخال التوكن للمتابعة.";
+          msg.textContent = "❌ يجب إدخال التوكن للمتابعة.";
+          msg.className = "error";
         }
         return;
       }
@@ -91,9 +163,11 @@
       const found = users.find(u => u.username === username && u.password === password);
 
       if (!found) {
-        msg.innerText = "❌ اسم المستخدم أو كلمة المرور غير صحيحة.";
+        msg.textContent = "❌ اسم المستخدم أو كلمة المرور غير صحيحة.";
+        msg.className = "error";
       } else if (found.status === "pending") {
-        msg.innerText = "⏳ حسابك قيد المراجعة، الرجاء الانتظار.";
+        msg.textContent = "⏳ حسابك قيد المراجعة، الرجاء الانتظار.";
+        msg.className = "warning";
       } else {
         localStorage.setItem("loggedUser", JSON.stringify(found));
         window.location.href = "home.html";

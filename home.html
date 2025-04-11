@@ -1,30 +1,162 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>الرئيسية - منصة مجّاني</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary-color: #0072ff;
+      --secondary-color: teal;
+      --danger-color: crimson;
+      --admin-color: purple;
+      --browse-color: #009688;
+      --folders-color: #ff5722;
+      --bg-light: #f5f7f9;
+      --text-color-light: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #5D5CDE;
+        --secondary-color: #00897b;
+        --danger-color: #e53935;
+        --admin-color: #9c27b0;
+        --browse-color: #009688;
+        --folders-color: #ff5722;
+        --bg-light: #181818;
+        --text-color-light: #e0e0e0;
+      }
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-light);
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color-light);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--primary-color);
+    }
+    
+    .button-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      color: white;
+      transition: opacity 0.3s, transform 0.2s;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    
+    .admin-btn {
+      background-color: var(--admin-color);
+    }
+    
+    .browse-btn {
+      background-color: var(--browse-color);
+    }
+    
+    .logout-btn {
+      background-color: var(--danger-color);
+      border: none;
+      cursor: pointer;
+    }
+    
+    .upload-btn {
+      background-color: var(--secondary-color);
+    }
+    
+    .folders-btn {
+      background-color: var(--folders-color);
+    }
+    
+    .user-welcome {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      animation: fadeIn 1s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1 style="text-align:center; margin-top: 60px;">🎓 أهلاً بك في الواجهة الرئيسية</h1>
-  <div style="text-align:center; margin-top: 30px;">
-    <a id="adminPanelBtn" href="admin.html" style="display:none; padding: 12px 20px; background-color: purple; color: white; border-radius: 8px; font-size: 16px;">🔧 لوحة تحكم الأدمين</a>
+  <h1>🎓 أهلاً بك في الواجهة الرئيسية</h1>
+  
+  <div class="user-welcome" id="userWelcome"></div>
+  
+  <div class="button-container">
+    <a id="adminPanelBtn" href="admin.html" style="display:none;" class="btn admin-btn">🔧 لوحة تحكم الأدمين</a>
+  </div>
+
+  <div class="button-container">
+    <a href="upload-center.html" class="btn upload-btn">📤 مركز رفع الملفات</a>
+  </div>
+  
+  <div class="button-container">
+    <a id="manageFoldersBtn" href="manage-folders.html" style="display:none;" class="btn folders-btn">🗂️ إدارة المجلدات</a>
+  </div>
+  
+  <div class="button-container">
+    <a id="browseSiteBtn" href="browse.html" style="display:none;" class="btn browse-btn">🌐 تصفح الموقع</a>
+  </div>
+
+  <div class="button-container">
+    <button onclick="logout()" class="btn logout-btn">🔓 تسجيل الخروج</button>
   </div>
 
   <script>
+    // التحقق من تسجيل الدخول
     const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+    
+    if (!isAdmin && !loggedUser) {
+      window.location.href = "login.html";
+    } else if (!isAdmin && loggedUser && loggedUser.status !== "approved") {
+      // إذا كان المستخدم غير معتمد، إعادة توجيهه إلى صفحة الدخول
+      localStorage.removeItem("loggedUser");
+      window.location.href = "login.html";
+    }
+    
+    // عرض رسالة الترحيب
+    const welcomeElement = document.getElementById("userWelcome");
+    if (isAdmin) {
+      welcomeElement.innerHTML = "👨‍🏫 مرحباً بك في لوحة تحكم المسؤول";
+    } else if (loggedUser) {
+      welcomeElement.innerHTML = `👋 مرحباً بك ${loggedUser.username}`;
+    }
+    
+    // عرض أزرار الأدمين
     if (isAdmin) {
       document.getElementById("adminPanelBtn").style.display = "inline-block";
+      document.getElementById("manageFoldersBtn").style.display = "inline-block";
+      document.getElementById("browseSiteBtn").style.display = "inline-block";
     }
-  </script>
-
-  <div style="text-align:center; margin-top: 30px;">
-    <button onclick="logout()" style="padding: 12px 20px; background-color: crimson; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-      🔓 تسجيل الخروج
-    </button>
-  </div>
-  <script>
+    
+    // وظيفة تسجيل الخروج
     function logout() {
       localStorage.removeItem("loggedUser");
       localStorage.removeItem("isAdmin");
@@ -32,36 +164,48 @@
       window.location.href = "index.html";
     }
   </script>
+  
+  <!-- تضمين ملف التحقق من الجلسة -->
+  <script>
+    // هذا الكود هو جزء من auth.js - للتحقق من الجلسة
+    function checkAuth() {
+      // الحصول على الصفحة الحالية
+      const currentPage = window.location.pathname.split('/').pop();
+      
+      // الصفحات التي لا تتطلب تسجيل دخول
+      const publicPages = ['index.html', 'login.html', 'register.html', ''];
+      
+      // التحقق من تسجيل الدخول
+      const isAdmin = localStorage.getItem("isAdmin") === "true";
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+      const isLoggedIn = isAdmin || loggedUser !== null;
+      
+      // إعادة التوجيه إلى صفحة الدخول إذا لم يكن مسجل دخول ويحاول الوصول إلى صفحة محمية
+      if (!isLoggedIn && !publicPages.includes(currentPage)) {
+        window.location.href = "login.html";
+        return false;
+      }
+      
+      // صفحات الأدمين فقط
+      const adminPages = ['admin.html', 'manage-folders.html'];
+      
+      // إعادة توجيه المستخدمين غير الأدمين الذين يحاولون الوصول إلى صفحات الأدمين
+      if (adminPages.includes(currentPage) && !isAdmin) {
+        window.location.href = "home.html";
+        return false;
+      }
+      
+      // التحقق مما إذا كان المستخدم العادي معتمدًا
+      if (!isAdmin && loggedUser && loggedUser.status !== "approved" && !publicPages.includes(currentPage)) {
+        window.location.href = "login.html";
+        return false;
+      }
+      
+      return true;
+    }
 
-    <div style="text-align:center; margin-top: 20px;">
-      <a href="upload-center.html" style="padding: 12px 20px; background-color: teal; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
-        📤 مركز رفع الملفات
-      </a>
-    </div>
-    
-
-<div style="text-align:center; margin-top: 20px;">
-  <a id="manageFoldersBtn" href="manage-folders.html" style="display:none; padding: 12px 20px; background-color: #ff5722; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
-    🗂️ إدارة المجلدات
-  </a>
-</div>
-<script>
-  if (localStorage.getItem("isAdmin") === "true") {
-    document.getElementById("manageFoldersBtn").style.display = "inline-block";
-  }
-</script>
-
-
-<div style="text-align:center; margin-top: 20px;">
-  <a id="browseSiteBtn" href="index.html" style="display:none; padding: 12px 20px; background-color: #009688; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
-    🌐 تصفح الموقع
-  </a>
-</div>
-<script>
-  if (localStorage.getItem("isAdmin") === "true") {
-    document.getElementById("browseSiteBtn").style.display = "inline-block";
-  }
-</script>
-
+    // تنفيذ الفحص فور تحميل السكريبت
+    checkAuth();
+  </script>
 </body>
 </html>

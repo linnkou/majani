@@ -1,118 +1,271 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>لوحة تحكم الأدمين</title>
+  <title>لوحة تحكم الأدمين - منصة مجّاني</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    button { margin: 0 5px; }
+    :root {
+      --primary-color: #0072ff;
+      --approve-color: #4CAF50;
+      --reject-color: #f44336;
+      --browse-color: #009688;
+      --card-bg-light: white;
+      --text-color-light: #333;
+      --text-secondary-light: #666;
+      --bg-light: #f5f7f9;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #5D5CDE;
+        --card-bg-light: #242424;
+        --text-color-light: #e0e0e0;
+        --text-secondary-light: #a0a0a0;
+        --bg-light: #181818;
+      }
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color-light);
+      padding: 20px;
+      background-color: var(--bg-light);
+      margin: 0;
+    }
+    
+    h1, h2 {
+      color: var(--primary-color);
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .user-card {
+      background-color: var(--card-bg-light);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .user-info {
+      margin-bottom: 10px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .approve-btn {
+      background-color: var(--approve-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .approve-btn:hover {
+      background-color: #3d8b3d;
+    }
+    
+    .reject-btn {
+      background-color: var(--reject-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .reject-btn:hover {
+      background-color: #d32f2f;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .nav-btn {
+      padding: 10px 20px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    
+    .home-btn {
+      background-color: var(--primary-color);
+    }
+    
+    .home-btn:hover {
+      background-color: #005fcc;
+    }
+    
+    .browse-btn {
+      background-color: var(--browse-color);
+    }
+    
+    .browse-btn:hover {
+      background-color: #00796b;
+    }
+    
+    .no-users {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary-light);
+      background-color: var(--card-bg-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--card-bg-light);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
   </style>
 </head>
 <body>
-<script>
-  if (localStorage.getItem("isAdmin") !== "true" || !localStorage.getItem("github_token")) {
-    window.location.href = "admin-login.html";
-  }
-</script> style="font-family: Arial; max-width: 900px; margin: auto; padding-top: 40px;">
-  <h2>👨‍💼 لوحة تحكم الأدمين - إدارة المستخدمين</h2>
-  <p id="msg"></p>
-  <table>
-    <thead>
-      <tr>
-        <th>الاسم</th>
-        <th>البريد</th>
-        <th>الحالة</th>
-        <th>الصلاحية</th>
-        <th>خيارات</th>
-      </tr>
-    </thead>
-    <tbody id="userTable"></tbody>
-  </table>
+  <div class="container">
+    <h1>🔧 لوحة تحكم الأدمين</h1>
+    
+    <div class="nav-buttons">
+      <a href="home.html" class="nav-btn home-btn">🏠 الرئيسية</a>
+      <a href="browse.html" class="nav-btn browse-btn">🌐 تصفح الموقع</a>
+    </div>
+    
+    <div class="section">
+      <h2>إدارة طلبات التسجيل</h2>
+      <div id="pendingUsers">
+        <!-- سيتم عرض المستخدمين المعلقين هنا -->
+        <div class="no-users">جاري تحميل طلبات التسجيل...</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>المستخدمون المعتمدون</h2>
+      <div id="approvedUsers">
+        <!-- سيتم عرض المستخدمين المعتمدين هنا -->
+        <div class="no-users">جاري تحميل المستخدمين المعتمدين...</div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const token = localStorage.getItem('github_token');
-    const repo = "majani";
-    const owner = "linnkou";
-    const filePath = "users.json";
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
-    const msg = document.getElementById("msg");
-
-    let sha = "";
-    let users = [];
-
-    async function fetchUsers() {
-      const res = await fetch(apiUrl, {
-        headers: { Authorization: "token " + token }
-      });
-      const data = await res.json();
-      sha = data.sha;
-      users = JSON.parse(atob(data.content));
-      renderTable();
+    // التحقق من صلاحيات الأدمين أولاً
+    if (localStorage.getItem("isAdmin") !== "true") {
+      window.location.href = "home.html";
     }
-
-    function renderTable() {
-      const table = document.getElementById('userTable');
-      table.innerHTML = "";
-      users.forEach((user, index) => {
-        table.innerHTML += `
-          <tr>
-            <td contenteditable onblur="editName(${index}, this.innerText)">${user.username}</td>
-            <td>${user.email}</td>
-            <td>${user.status}</td>
-            <td>${user.role}</td>
-            <td>
-              ${user.status === 'pending' ? `<button onclick="approve(${index})">✔️ قبول</button>` : ''}
-              <button onclick="remove(${index})">🗑️ حذف</button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function approve(index) {
-      users[index].status = "approved";
-      saveUsers("موافقة على مستخدم");
-    }
-
-    function remove(index) {
-      users.splice(index, 1);
-      saveUsers("حذف مستخدم");
-    }
-
-    function editName(index, newName) {
-      users[index].username = newName;
-      saveUsers("تعديل اسم مستخدم");
-    }
-
-    async function saveUsers(message) {
-      const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(users, null, 2))));
-      const res = await fetch(apiUrl, {
-        method: "PUT",
-        headers: {
-          "Authorization": "token " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: message,
-          content: updatedContent,
-          sha: sha,
-          branch: "main"
-        })
-      });
-
-      if (res.ok) {
-        msg.innerText = "✅ تم حفظ التعديلات بنجاح";
-        fetchUsers();
+    
+    // وظيفة لتحميل وعرض المستخدمين
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem("registrations") || "[]");
+      const pendingContainer = document.getElementById("pendingUsers");
+      const approvedContainer = document.getElementById("approvedUsers");
+      
+      // تفريغ الحاويات
+      pendingContainer.innerHTML = "";
+      approvedContainer.innerHTML = "";
+      
+      // تصفية وعرض المستخدمين المعلقين
+      const pendingUsers = users.filter(user => user.status === "pending");
+      if (pendingUsers.length === 0) {
+        pendingContainer.innerHTML = '<div class="no-users">لا توجد طلبات تسجيل معلقة</div>';
       } else {
-        const err = await res.json();
-        msg.innerText = "❌ خطأ أثناء الحفظ: " + (err.message || "غير معروف");
+        pendingUsers.forEach((user, index) => {
+          const userCard = document.createElement("div");
+          userCard.className = "user-card";
+          userCard.innerHTML = `
+            <div class="user-info">
+              <strong>اسم المستخدم:</strong> ${user.username}<br>
+              <strong>البريد الإلكتروني:</strong> ${user.email}
+            </div>
+            <div class="actions">
+              <button class="approve-btn" onclick="approveUser('${user.username}')">✅ موافقة</button>
+              <button class="reject-btn" onclick="rejectUser('${user.username}')">❌ رفض</button>
+            </div>
+          `;
+          pendingContainer.appendChild(userCard);
+        });
+      }
+      
+      // تصفية وعرض المستخدمين المعتمدين
+      const approvedUsers = users.filter(user => user.status === "approved");
+      if (approvedUsers.length === 0) {
+        approvedContainer.innerHTML = '<div class="no-users">لا يوجد مستخدمون معتمدون حالياً</div>';
+      } else {
+        approvedUsers.forEach(user => {
+          const userCard = document.createElement("div");
+          userCard.className = "user-card";
+          userCard.innerHTML = `
+            <div class="user-info">
+              <strong>اسم المستخدم:</strong> ${user.username}<br>
+              <strong>البريد الإلكتروني:</strong> ${user.email}
+            </div>
+          `;
+          approvedContainer.appendChild(userCard);
+        });
       }
     }
-
-    fetchUsers();
+    
+    // وظيفة للموافقة على مستخدم
+    function approveUser(username) {
+      const users = JSON.parse(localStorage.getItem("registrations") || "[]");
+      
+      // البحث عن المستخدم بالاسم
+      const userIndex = users.findIndex(u => u.username === username && u.status === "pending");
+      
+      if (userIndex !== -1) {
+        users[userIndex].status = "approved";
+        localStorage.setItem("registrations", JSON.stringify(users));
+        loadUsers(); // تحديث العرض
+      }
+    }
+    
+    // وظيفة لرفض مستخدم
+    function rejectUser(username) {
+      const users = JSON.parse(localStorage.getItem("registrations") || "[]");
+      
+      // البحث عن المستخدم بالاسم
+      const userIndex = users.findIndex(u => u.username === username && u.status === "pending");
+      
+      if (userIndex !== -1) {
+        users.splice(userIndex, 1); // إزالة المستخدم
+        localStorage.setItem("registrations", JSON.stringify(users));
+        loadUsers(); // تحديث العرض
+      }
+    }
+    
+    // تحميل المستخدمين عند تحميل الصفحة
+    window.onload = loadUsers;
   </script>
 </body>
 </html>

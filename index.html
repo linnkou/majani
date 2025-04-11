@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,16 +5,36 @@
   <title>مرحبًا بك في منصة مجّاني</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --primary-color: #0072ff;
+      --primary-hover: #005fcc;
+      --text-light: white;
+      --btn-bg-light: white;
+      --gradient-start: #00c6ff;
+      --gradient-end: #0072ff;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #5D5CDE;
+        --primary-hover: #4a49c0;
+        --text-light: #e0e0e0;
+        --btn-bg-light: #f0f0f0;
+        --gradient-start: #3a3984;
+        --gradient-end: #5D5CDE;
+      }
+    }
+    
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to left, #00c6ff, #0072ff);
+      background: linear-gradient(to left, var(--gradient-start), var(--gradient-end));
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      color: white;
+      color: var(--text-light);
       text-align: center;
     }
     h1 {
@@ -30,16 +49,28 @@
       font-weight: bold;
       border: none;
       border-radius: 10px;
-      background-color: white;
-      color: #0072ff;
+      background-color: var(--btn-bg-light);
+      color: var(--primary-color);
       text-decoration: none;
       transition: all 0.3s ease;
     }
     .btn:hover {
-      background-color: #005fcc;
-      color: white;
+      background-color: var(--primary-hover);
+      color: var(--text-light);
     }
   </style>
+  <script>
+    // التحقق مما إذا كان المستخدم مسجل دخول بالفعل
+    window.onload = function() {
+      const isAdmin = localStorage.getItem("isAdmin") === "true";
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+      
+      if (isAdmin || loggedUser) {
+        // إذا كان المستخدم مسجل دخول، التوجيه إلى الصفحة الرئيسية
+        window.location.href = "home.html";
+      }
+    }
+  </script>
 </head>
 <body>
   <h1>👋 مرحبًا بك في منصة مجّاني التعليمية</h1>

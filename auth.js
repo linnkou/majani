@@ -18,10 +18,10 @@ function checkAuth() {
   }
   
   // صفحات الأدمين فقط
-  const adminPages = ['admin.html', 'manage-folders.html'];
+  const adminPages = ['admin-panel.html', 'manage-folders.html'];
   
   // إعادة توجيه المستخدمين غير الأدمين الذين يحاولون الوصول إلى صفحات الأدمين
-  if (adminPages.includes(currentPage) {
+  if (adminPages.includes(currentPage)) {
     if (!isAdmin) {
       alert("🚫 هذه الصفحة مخصصة للمسؤول فقط.");
       window.location.href = "browse.html";

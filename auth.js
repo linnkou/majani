@@ -32,7 +32,7 @@ function checkAuth() {
   
   // إعادة توجيه المستخدمين غير الأدمين الذين يحاولون الوصول إلى صفحات الأدمين
   if (adminPages.includes(currentPage) && !isAdmin) {
-    window.location.href = "home.html";
+    window.location.href = "browse.html";
     return false;
   }
   
@@ -50,3 +50,9 @@ checkAuth();
   </script>
 </body>
 </html>
+
+  // منع المستخدم العادي من الوصول إلى صفحات الأدمين
+  if (!isAdmin && adminPages.includes(currentPage)) {
+    alert("🚫 هذه الصفحة مخصصة للمسؤول فقط.");
+    window.location.href = "browse.html";
+  }

@@ -134,7 +134,7 @@
       
       if (isAdmin || loggedUser) {
         // إذا كان المستخدم مسجل دخول، التوجيه إلى الصفحة الرئيسية
-        window.location.href = "home.html";
+        window.location.href = "browse.html";
       }
     }
     
@@ -151,7 +151,7 @@
         const token = prompt("🔐 أدخل GitHub Token الخاص بك:");
         if (token) {
           localStorage.setItem("github_token", token);
-          window.location.href = "home.html";
+          window.location.href = "browse.html";
         } else {
           msg.textContent = "❌ يجب إدخال التوكن للمتابعة.";
           msg.className = "error";
@@ -170,7 +170,7 @@
         msg.className = "warning";
       } else {
         localStorage.setItem("loggedUser", JSON.stringify(found));
-        window.location.href = "home.html";
+        window.location.href = "browse.html";
       }
     });
   </script>

@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>📂 إدارة المجلدات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #0072ff;
+      margin-bottom: 20px;
+    }
+    .admin-tools {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 15px;
+      border-radius: 6px;
+    }
+    input {
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0072ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fcc;
+    }
+    ul {
+      list-style: none;
+      padding-right: 20px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    .file {
+      color: #444;
+    }
+    .folder {
+      font-weight: bold;
+      color: #0072ff;
+      cursor: pointer;
+    }
+    .pending {
+      background-color: #ffe5b4;
+      padding: 5px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📂 لوحة إدارة المجلدات والملفات</h2>
+  <div class="admin-tools">
+    <label>📁 إنشاء مجلد رئيسي جديد داخل data/</label>
+    <input type="text" id="newFolderName" placeholder="اسم المجلد الجديد" />
+    <button onclick="createFolder()">➕ إنشاء</button>
+    <p id="createMsg"></p>
+
+    <hr />
+
+    <h3>📁 المجلدات الحالية</h3>
+    <div id="tree">جارٍ التحميل...</div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("github_token");
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const repo = "majani";
+    const owner = "linnkou";
+    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
+
+    if (!isAdmin || !token) {
+      alert("🔐 هذه الصفحة مخصصة للأدمين فقط.");
+      window.location.href = "index.html";
+    }
+
+    async function createFolder() {
+      const name = document.getElementById("newFolderName").value.trim().replace(/\s+/g, "-");
+      const msg = document.getElementById("createMsg");
+      if (!name) return msg.innerText = "❗ أدخل اسمًا صالحًا.";
+
+      const res = await fetch(`${apiBase}/data/${name}/.gitkeep`, {
+        method: "PUT",
+        headers: {
+          Authorization: "token " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `إنشاء مجلد جديد: ${name}`,
+          content: "",
+          branch: "main"
+        })
+      });
+
+      if (res.ok) {
+        msg.innerText = "✅ تم إنشاء المجلد بنجاح.";
+        loadTree("data", document.getElementById("tree"));
+      } else {
+        const err = await res.json();
+        msg.innerText = "❌ فشل: " + err.message;
+      }
+    }
+
+    async function loadTree(path, container) {
+      const res = await fetch(`${apiBase}/${path}`, {
+        headers: { Authorization: "token " + token }
+      });
+      const data = await res.json();
+      container.innerHTML = "";
+      const ul = document.createElement("ul");
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+        if (item.type === "dir") {
+          li.innerHTML = `📁 <span class="folder" onclick="loadTree('${item.path}', this)"> ${item.name}</span>`;
+        } else {
+          const fileLink = `https://linnkou.github.io/majani/${item.path}`;
+          li.innerHTML = `📄 <a class="file" href="${fileLink}" target="_blank">${item.name}</a>`;
+        }
+        ul.appendChild(li);
+      });
+
+      container.appendChild(ul);
+    }
+
+    loadTree("data", document.getElementById("tree"));
+  </script>
+</body>
+
+<script>
+  async function loadPendingFiles() {
+    const pendingDiv = document.getElementById("pending");
+    const res = await fetch(`${apiBase}/pending_uploads`, {
+      headers: { Authorization: "token " + token }
+    });
+    const files = await res.json();
+    if (!Array.isArray(files)) {
+      pendingDiv.innerText = "❌ فشل في جلب الملفات.";
+      return;
+    }
+    if (files.length === 0) {
+      pendingDiv.innerText = "لا توجد ملفات معلقة حاليا.";
+      return;
+    }
+    const ul = document.createElement("ul");
+    files.forEach(file => {
+      const li = document.createElement("li");
+      const fileName = file.name;
+      const filePath = file.path;
+      li.innerHTML = `📄 <a href="https://linnkou.github.io/majani/${filePath}" target="_blank">${fileName}</a>
+        <button onclick="approveFile('${filePath}')">✅ موافقة</button>
+        <button onclick="deleteFile('${filePath}')">🗑️ حذف</button>`;
+      ul.appendChild(li);
+    });
+    pendingDiv.appendChild(ul);
+  }
+
+  async function approveFile(path) {
+    const target = prompt("📂 أدخل المسار النهائي (مثال: data/primary/السنة-الثالثة/الرياضيات):");
+    if (!target) return;
+    const fileName = path.split("/").pop();
+    const res = await fetch(`${apiBase}/${path}`, {
+      headers: { Authorization: "token " + token }
+    });
+    const file = await res.json();
+    const content = file.content;
+    const decoded = content;
+
+    const uploadRes = await fetch(`${apiBase}/${target}/${fileName}`, {
+      method: "PUT",
+      headers: {
+        Authorization: "token " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "موافقة على الملف ونقله",
+        content: decoded,
+        branch: "main"
+      })
+    });
+
+    if (uploadRes.ok) {
+      await deleteFile(path, true);
+      alert("✅ تمت الموافقة وتم النقل!");
+      location.reload();
+    } else {
+      alert("❌ فشل في النقل.");
+    }
+  }
+
+  async function deleteFile(path, silent = false) {
+    const res = await fetch(`${apiBase}/${path}`, {
+      headers: { Authorization: "token " + token }
+    });
+    const file = await res.json();
+    const sha = file.sha;
+    const delRes = await fetch(`${apiBase}/${path}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "token " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "حذف ملف من المعلقات",
+        sha: sha,
+        branch: "main"
+      })
+    });
+    if (!silent) {
+      if (delRes.ok) {
+        alert("🗑️ تم حذف الملف بنجاح.");
+        location.reload();
+      } else {
+        alert("❌ فشل في الحذف.");
+      }
+    }
+  }
+
+  loadPendingFiles();
+</script>
+</html>
+

@@ -5,29 +5,98 @@
   <meta charset="UTF-8" />
   <title>تسجيل الدخول</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to left, #00c6ff, #0072ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0072ff;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0072ff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005fcc;
+    }
+    #msg {
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
 </head>
-<body style="font-family: Arial; max-width: 500px; margin: auto; padding-top: 60px;">
-  <h2>🔐 تسجيل الدخول</h2>
-  <form id="loginForm">
-    <input type="text" id="username" placeholder="اسم المستخدم" required style="width:100%;margin:10px 0;padding:10px" /><br>
-    <input type="password" id="password" placeholder="كلمة المرور" required style="width:100%;margin:10px 0;padding:10px" /><br>
-    <button type="submit" style="padding: 10px 20px;">دخول</button>
-  </form>
-  <p id="msg"></p>
+<body>
+  <div class="container">
+    <h2>🔐 تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="اسم المستخدم" required />
+      <input type="password" id="password" placeholder="كلمة المرور" required />
+      <button type="submit">دخول</button>
+    </form>
+    <p id="msg"></p>
+  </div>
+
   <script>
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const users = JSON.parse(localStorage.getItem('registrations') || '[]');
-      const matched = users.find(u => u.username === username && u.password === password);
-      if (!matched) {
-        document.getElementById('msg').innerText = '❌ معلومات الدخول غير صحيحة';
-      } else if (matched.status === 'pending') {
-        document.getElementById('msg').innerText = '⏳ في انتظار موافقة الإدارة على حسابك';
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const msg = document.getElementById('msg');
+
+      if (username === "admin" && password === "admin123") {
+        localStorage.setItem("isAdmin", "true");
+        const token = prompt("🔐 أدخل GitHub Token الخاص بك:");
+        if (token) {
+          localStorage.setItem("github_token", token);
+          window.location.href = "home.html";
+        } else {
+          msg.innerText = "❌ يجب إدخال التوكن للمتابعة.";
+        }
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("registrations") || "[]");
+      const found = users.find(u => u.username === username && u.password === password);
+
+      if (!found) {
+        msg.innerText = "❌ اسم المستخدم أو كلمة المرور غير صحيحة.";
+      } else if (found.status === "pending") {
+        msg.innerText = "⏳ حسابك قيد المراجعة، الرجاء الانتظار.";
       } else {
-        localStorage.setItem('loggedUser', JSON.stringify(matched));
-        window.location.href = matched.role === 'admin' ? 'admin.html' : 'user-panel.html';
+        localStorage.setItem("loggedUser", JSON.stringify(found));
+        window.location.href = "home.html";
       }
     });
   </script>

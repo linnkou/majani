@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>الرئيسية - منصة مجّاني</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+  <h1 style="text-align:center; margin-top: 60px;">🎓 أهلاً بك في الواجهة الرئيسية</h1>
+  <div style="text-align:center; margin-top: 30px;">
+    <a id="adminPanelBtn" href="admin.html" style="display:none; padding: 12px 20px; background-color: purple; color: white; border-radius: 8px; font-size: 16px;">🔧 لوحة تحكم الأدمين</a>
+  </div>
+
+  <script>
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    if (isAdmin) {
+      document.getElementById("adminPanelBtn").style.display = "inline-block";
+    }
+  </script>
+
+  <div style="text-align:center; margin-top: 30px;">
+    <button onclick="logout()" style="padding: 12px 20px; background-color: crimson; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+      🔓 تسجيل الخروج
+    </button>
+  </div>
+  <script>
+    function logout() {
+      localStorage.removeItem("loggedUser");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("github_token");
+      window.location.href = "index.html";
+    }
+  </script>
+
+    <div style="text-align:center; margin-top: 20px;">
+      <a href="upload-center.html" style="padding: 12px 20px; background-color: teal; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
+        📤 مركز رفع الملفات
+      </a>
+    </div>
+    
+
+<div style="text-align:center; margin-top: 20px;">
+  <a id="manageFoldersBtn" href="manage-folders.html" style="display:none; padding: 12px 20px; background-color: #ff5722; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
+    🗂️ إدارة المجلدات
+  </a>
+</div>
+<script>
+  if (localStorage.getItem("isAdmin") === "true") {
+    document.getElementById("manageFoldersBtn").style.display = "inline-block";
+  }
+</script>
+
+</body>
+</html>

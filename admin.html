@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة تحكم الأدمين</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    button { margin: 0 5px; }
+  </style>
+</head>
+<body style="font-family: Arial; max-width: 900px; margin: auto; padding-top: 40px;">
+  <h2>👨‍💼 لوحة تحكم الأدمين - إدارة المستخدمين</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>البريد</th>
+        <th>الحالة</th>
+        <th>الصلاحية</th>
+        <th>خيارات</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem('registrations') || '[]');
+    const table = document.getElementById('userTable');
+
+    function renderTable() {
+      table.innerHTML = '';
+      users.forEach((user, index) => {
+        table.innerHTML += `
+          <tr>
+            <td contenteditable onblur="editName(${index}, this.innerText)">${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.status}</td>
+            <td>${user.role}</td>
+            <td>
+              ${user.status === 'pending' ? `<button onclick="approve(${index})">✔️ قبول</button>` : ''}
+              <button onclick="remove(${index})">🗑️ حذف</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function approve(index) {
+      users[index].status = 'approved';
+      save();
+    }
+
+    function remove(index) {
+      users.splice(index, 1);
+      save();
+    }
+
+    function editName(index, newName) {
+      users[index].username = newName;
+      save();
+    }
+
+    function save() {
+      localStorage.setItem('registrations', JSON.stringify(users));
+      renderTable();
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>

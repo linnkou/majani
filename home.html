@@ -51,5 +51,17 @@
   }
 </script>
 
+
+<div style="text-align:center; margin-top: 20px;">
+  <a id="browseSiteBtn" href="index.html" style="display:none; padding: 12px 20px; background-color: #009688; color: white; border-radius: 8px; font-size: 16px; text-decoration: none;">
+    🌐 تصفح الموقع
+  </a>
+</div>
+<script>
+  if (localStorage.getItem("isAdmin") === "true") {
+    document.getElementById("browseSiteBtn").style.display = "inline-block";
+  }
+</script>
+
 </body>
 </html>

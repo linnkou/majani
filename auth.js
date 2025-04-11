@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>Auth.js - ملف التحقق من الجلسة</title>
-</head>
-<body>
-  <h1>هذا ملف JavaScript للتحقق من الجلسة</h1>
-  
-  <script>
 // auth.js - ملف التحقق من الجلسة
 function checkAuth() {
   // الحصول على الصفحة الحالية
@@ -31,13 +21,18 @@ function checkAuth() {
   const adminPages = ['admin.html', 'manage-folders.html'];
   
   // إعادة توجيه المستخدمين غير الأدمين الذين يحاولون الوصول إلى صفحات الأدمين
-  if (adminPages.includes(currentPage) && !isAdmin) {
-    window.location.href = "browse.html";
-    return false;
+  if (adminPages.includes(currentPage) {
+    if (!isAdmin) {
+      alert("🚫 هذه الصفحة مخصصة للمسؤول فقط.");
+      window.location.href = "browse.html";
+      return false;
+    }
   }
   
   // التحقق مما إذا كان المستخدم العادي معتمدًا
   if (!isAdmin && loggedUser && loggedUser.status !== "approved" && !publicPages.includes(currentPage)) {
+    alert("حسابك قيد المراجعة، الرجاء الانتظار حتى الموافقة عليه.");
+    localStorage.removeItem("loggedUser");
     window.location.href = "login.html";
     return false;
   }
@@ -47,12 +42,3 @@ function checkAuth() {
 
 // تنفيذ الفحص فور تحميل السكريبت
 checkAuth();
-  </script>
-</body>
-</html>
-
-  // منع المستخدم العادي من الوصول إلى صفحات الأدمين
-  if (!isAdmin && adminPages.includes(currentPage)) {
-    alert("🚫 هذه الصفحة مخصصة للمسؤول فقط.");
-    window.location.href = "browse.html";
-  }

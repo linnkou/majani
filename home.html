@@ -101,6 +101,16 @@
         opacity: 1;
       }
     }
+
+    .status-message {
+      text-align: center;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 500px;
+      background-color: rgba(255, 152, 0, 0.1);
+      color: var(--warning-color);
+    }
   </style>
 </head>
 <body>
@@ -108,6 +118,8 @@
   
   <div class="user-welcome" id="userWelcome"></div>
   
+  <div id="statusMessage" class="status-message" style="display:none;"></div>
+
   <div class="button-container">
     <a id="adminPanelBtn" href="admin.html" style="display:none;" class="btn admin-btn">🔧 لوحة تحكم الأدمين</a>
   </div>
@@ -129,16 +141,21 @@
   </div>
 
   <script>
-    // التحقق من تسجيل الدخول
+    // التحقق من تسجيل الدخول وحالة المستخدم
     const isAdmin = localStorage.getItem("isAdmin") === "true";
     const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+    const statusMessage = document.getElementById("statusMessage");
     
     if (!isAdmin && !loggedUser) {
       window.location.href = "login.html";
-    } else if (!isAdmin && loggedUser && loggedUser.status !== "approved") {
-      // إذا كان المستخدم غير معتمد، إعادة توجيهه إلى صفحة الدخول
-      localStorage.removeItem("loggedUser");
-      window.location.href = "login.html";
+    } else if (!isAdmin && loggedUser) {
+      if (loggedUser.status !== "approved") {
+        statusMessage.style.display = "block";
+        statusMessage.textContent = "حسابك قيد المراجعة من قبل الإدارة. سيتم إعلامك عند الموافقة.";
+        localStorage.removeItem("loggedUser");
+        setTimeout(() => window.location.href = "login.html", 3000);
+        return;
+      }
     }
     
     // عرض رسالة الترحيب
@@ -154,6 +171,8 @@
       document.getElementById("adminPanelBtn").style.display = "inline-block";
       document.getElementById("manageFoldersBtn").style.display = "inline-block";
       document.getElementById("browseSiteBtn").style.display = "inline-block";
+    } else {
+      document.getElementById("browseSiteBtn").style.display = "inline-block";
     }
     
     // وظيفة تسجيل الخروج
@@ -163,49 +182,6 @@
       localStorage.removeItem("github_token");
       window.location.href = "index.html";
     }
-  </script>
-  
-  <!-- تضمين ملف التحقق من الجلسة -->
-  <script>
-    // هذا الكود هو جزء من auth.js - للتحقق من الجلسة
-    function checkAuth() {
-      // الحصول على الصفحة الحالية
-      const currentPage = window.location.pathname.split('/').pop();
-      
-      // الصفحات التي لا تتطلب تسجيل دخول
-      const publicPages = ['index.html', 'login.html', 'register.html', ''];
-      
-      // التحقق من تسجيل الدخول
-      const isAdmin = localStorage.getItem("isAdmin") === "true";
-      const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
-      const isLoggedIn = isAdmin || loggedUser !== null;
-      
-      // إعادة التوجيه إلى صفحة الدخول إذا لم يكن مسجل دخول ويحاول الوصول إلى صفحة محمية
-      if (!isLoggedIn && !publicPages.includes(currentPage)) {
-        window.location.href = "login.html";
-        return false;
-      }
-      
-      // صفحات الأدمين فقط
-      const adminPages = ['admin.html', 'manage-folders.html'];
-      
-      // إعادة توجيه المستخدمين غير الأدمين الذين يحاولون الوصول إلى صفحات الأدمين
-      if (adminPages.includes(currentPage) && !isAdmin) {
-        window.location.href = "home.html";
-        return false;
-      }
-      
-      // التحقق مما إذا كان المستخدم العادي معتمدًا
-      if (!isAdmin && loggedUser && loggedUser.status !== "approved" && !publicPages.includes(currentPage)) {
-        window.location.href = "login.html";
-        return false;
-      }
-      
-      return true;
-    }
-
-    // تنفيذ الفحص فور تحميل السكريبت
-    checkAuth();
   </script>
 </body>
 </html>

@@ -15,6 +15,7 @@
       --gradient-end: #0072ff;
       --error-color: crimson;
       --warning-color: #ff9800;
+      --success-color: #4CAF50;
     }
     
     @media (prefers-color-scheme: dark) {
@@ -98,9 +99,15 @@
     }
     .error {
       color: var(--error-color);
+      background-color: rgba(220, 20, 60, 0.1);
     }
     .warning {
       color: var(--warning-color);
+      background-color: rgba(255, 152, 0, 0.1);
+    }
+    .success {
+      color: var(--success-color);
+      background-color: rgba(76, 175, 80, 0.1);
     }
     .back-link {
       display: block;
@@ -132,9 +139,16 @@
       const isAdmin = localStorage.getItem("isAdmin") === "true";
       const loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
       
-      if (isAdmin || loggedUser) {
-        // إذا كان المستخدم مسجل دخول، التوجيه إلى الصفحة الرئيسية
+      if (isAdmin) {
         window.location.href = "browse.html";
+      } else if (loggedUser) {
+        if (loggedUser.status === "approved") {
+          window.location.href = "browse.html";
+        } else if (loggedUser.status === "pending") {
+          document.getElementById('msg').textContent = "⏳ حسابك قيد المراجعة، الرجاء الانتظار.";
+          document.getElementById('msg').className = "warning";
+          localStorage.removeItem("loggedUser");
+        }
       }
     }
     
@@ -145,13 +159,17 @@
       const msg = document.getElementById('msg');
       
       msg.className = "";
+      msg.textContent = "";
 
+      // تسجيل دخول الأدمن
       if (username === "admin" && password === "admin123") {
-        localStorage.setItem("isAdmin", "true");
         const token = prompt("🔐 أدخل GitHub Token الخاص بك:");
         if (token) {
+          localStorage.setItem("isAdmin", "true");
           localStorage.setItem("github_token", token);
-          window.location.href = "browse.html";
+          msg.textContent = "✅ تم تسجيل دخول المسؤول بنجاح";
+          msg.className = "success";
+          setTimeout(() => window.location.href = "browse.html", 1500);
         } else {
           msg.textContent = "❌ يجب إدخال التوكن للمتابعة.";
           msg.className = "error";
@@ -159,18 +177,21 @@
         return;
       }
 
+      // تسجيل دخول المستخدمين العاديين
       const users = JSON.parse(localStorage.getItem("registrations") || "[]");
-      const found = users.find(u => u.username === username && u.password === password);
+      const foundUser = users.find(u => u.username === username && u.password === password);
 
-      if (!found) {
+      if (!foundUser) {
         msg.textContent = "❌ اسم المستخدم أو كلمة المرور غير صحيحة.";
         msg.className = "error";
-      } else if (found.status === "pending") {
+      } else if (foundUser.status === "pending") {
         msg.textContent = "⏳ حسابك قيد المراجعة، الرجاء الانتظار.";
         msg.className = "warning";
       } else {
-        localStorage.setItem("loggedUser", JSON.stringify(found));
-        window.location.href = "browse.html";
+        localStorage.setItem("loggedUser", JSON.stringify(foundUser));
+        msg.textContent = "✅ تم تسجيل الدخول بنجاح، جاري التوجيه...";
+        msg.className = "success";
+        setTimeout(() => window.location.href = "browse.html", 1500);
       }
     });
   </script>

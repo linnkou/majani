@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل مستخدم جديد</title>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .register-box {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 380px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: #FFB800;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 16px;
+    }
+    input::placeholder {
+      color: #eee;
+    }
+    button {
+      background: linear-gradient(90deg, #FFB800, #FF5722);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      width: 100%;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #FFB800;
+    }
+    p, a {
+      color: #fff;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>تسجيل حساب جديد</h2>
+    <form id="registerForm">
+      <input type="text" id="username" placeholder="اسم المستخدم" required>
+      <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="password" placeholder="كلمة المرور (8 أحرف على الأقل)" required>
+      <button type="submit">تسجيل</button>
+    </form>
+    <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("يرجى إدخال بريد إلكتروني صحيح");
+        return;
+      }
+
+      if (password.length < 8) {
+        alert("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (users.find(u => u.username === username)) {
+        alert("اسم المستخدم مسجل بالفعل");
+        return;
+      }
+
+      users.push({ username, email, password, approved: false });
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("currentUser", JSON.stringify({ username, password }));
+
+      document.body.innerHTML = '<div style="text-align:center;padding:40px;"><h2 style="color:#FFB800;">تم التسجيل بنجاح</h2><p>بانتظار موافقة الأدمن...</p></div>';
+      setTimeout(() => { window.location.href = "login.html"; }, 2500);
+    });
+  </script>
+</body>
+</html>

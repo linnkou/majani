@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية - عالم الوورد المجاني للتعليم الجزائري</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #026937 0%, #1A8F5E 100%);
+            padding: 30px 0 0;
+            border-bottom: 3px solid #e9ecef;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+        }
+
+        .main-title p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .flag-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-top: 10px;
+            animation: pulse 2s infinite ease-in-out;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            top: 15px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0;
+            background-color: white;
+            position: relative;
+        }
+
+        nav a {
+            padding: 18px 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-direction: row-reverse;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+            justify-content: center;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: #f0f0f0;
+            z-index: -1;
+            transition: height 0.3s ease;
+        }
+
+        nav a:hover::before {
+            height: 100%;
+        }
+
+        nav a i {
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        nav a:hover i {
+            transform: translateY(-5px);
+        }
+
+        nav a.active {
+            background-color: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        /* Special Navigation Buttons */
+        .special-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .special-nav a {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .special-nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .special-nav a:hover::before {
+            transform: translateY(0);
+        }
+
+        .special-nav a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .special-nav a i {
+            font-size: 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .special-nav a:hover i {
+            transform: rotate(360deg);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .math-program {
+            background: linear-gradient(135deg, #17a2b8 0%, #0f7a89 100%);
+        }
+
+        .results-analysis {
+            background: linear-gradient(135deg, #6f42c1 0%, #543098 100%);
+        }
+
+        .certificates {
+            background: linear-gradient(135deg, #fd7e14 0%, #c86207 100%);
+        }
+
+        .resumes {
+            background: linear-gradient(135deg, #20c997 0%, #189e78 100%);
+        }
+
+        /* Content Styles */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 0 var(--border-radius) 0 100%;
+            z-index: 0;
+        }
+
+        .content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .content h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60%;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .content p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Featured Content */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .footer-content p {
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .contact-text {
+            font-weight: 700;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title h1 {
+                font-size: 1.8rem;
+            }
+
+            nav a {
+                flex: 1 1 40%;
+            }
+
+            .special-nav a {
+                min-width: 100%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-title h1 {
+                font-size: 1.5rem;
+            }
+
+            nav a {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="main-title">
+                <h1 onclick="" onclick="">عالم الوورد المجاني للتعليم الجزائري</h1>
+                <p>موقع تعليمي متكامل لجميع الأطوار التعليمية</p>
+                <div class="flag-container">
+                    <img src="https://raw.githubusercontent.com/linnkou/latifmath1/refs/heads/main/images/1-algerie.gif" alt="العلم الجزائري" style="width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+        <div class="nav-container">
+            <nav>
+                <a href="index.html" class="active">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+                <a href="primary-school.html">
+                    <i class="fas fa-child"></i>
+                    الطور الابتدائي
+                </a>
+                <a href="middle-school.html">
+                    <i class="fas fa-user-graduate"></i>
+                    الطور المتوسط
+                </a>
+                <a href="secondary-school.html">
+                    <i class="fas fa-user-tie"></i>
+                    الطور الثانوي
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    
+<div class="special-nav">
+  <a href="https://latifautomath.netlify.app/" class="math-program" target="_blank">
+    <i class="fas fa-robot"></i>
+    <span>البرنامج الآلي لرياضيات الرابعة متوسط</span>
+    <span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse mt-1">جديد 🔥</span>
+  </a>
+  <a href="https://latifanalyses.netlify.app/" class="results-analysis" target="_blank">
+    <i class="fas fa-chart-line"></i>
+    <span>نتائج التلاميذ</span>
+  </a>
+  <a href="https://latifcv.netlify.app/" class="certificates" target="_blank">
+    <i class="fas fa-certificate"></i>
+    <span>صانع الشهادات</span>
+  </a>
+  <a href="https://latifcertificate.netlify.app//" class="resumes" target="_blank">
+    <i class="fas fa-id-card"></i>
+    <span>السير الذاتية</span>
+  </a>
+</div>
+
+
+    <div class="content">
+        <h2>مرحبًا بكم في عالم الوورد المجاني للتعليم الجزائري!</h2>
+        <p>هنا يمكنك العثور على جميع الموارد التعليمية لجميع الأطوار التعليمية. نهدف إلى توفير أدوات تعليمية متكاملة ومجانية لدعم المعلمين والطلاب في العملية التعليمية.</p>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>مناهج متنوعة</h3>
+                <p>نقدم جميع المناهج والمقررات الدراسية لمختلف المستويات التعليمية</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>أدوات مساعدة</h3>
+                <p>برامج وأدوات تفاعلية تساعد المعلمين والطلاب في العملية التعليمية</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-download"></i>
+                </div>
+                <h3>نماذج جاهزة</h3>
+                <p>مجموعة متنوعة من النماذج الجاهزة للاستخدام في مختلف المجالات التعليمية</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 عالم الوورد المجاني للتعليم الجزائري - جميع الحقوق محفوظة</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/latifboudihir/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/linnkou/latifmath1/main/images/giphy.gif" alt="للتواصل معي" style="width: 50px; height: 50px;">
+                    <span class="contact-text">للتواصل معي انقر هنا</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // إضافة تأثير نبض للأزرار عند النقر عليها
+        const allButtons = document.querySelectorAll('nav a, .special-nav a');
+        
+        allButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // إضافة تأثير نبض
+                this.classList.add('pulse');
+                
+                // إزالة التأثير بعد انتهاء الحركة
+                setTimeout(() => {
+                    this.classList.remove('pulse');
+                }, 300);
+            });
+        });
+
+        // إضافة تأثير CSS للنبض
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes buttonPulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(0.95); }
+                100% { transform: scale(1); }
+            }
+            
+            .pulse {
+                animation: buttonPulse 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+<script>
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const found = currentUser ? users.find(u => u.username === currentUser.username && u.password === currentUser.password) : null;
+  const isAdmin = currentUser && currentUser.username === "latifking" && currentUser.password === "ding2010";
+
+  if (!found && !isAdmin) {
+    window.location.href = "login.html";
+  } else if (found && !found.approved) {
+    window.location.href = "not-approved.html";
+  }
+
+  function logoutUser() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+  }
+</script>
+<div style="position: fixed; top: 20px; left: 20px; z-index: 999;">
+  <button onclick="logoutUser()" style="padding: 10px 20px; background: #F44336; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">تسجيل الخروج</button>
+</div>
+
+
+<button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
+
+<script>
+  let adminClickCount = 0;
+  function  {
+    adminClickCount++;
+    if (adminClickCount === 5) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0;
+    }
+  }
+</script>
+
+
+
+<button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
+
+<script>
+  // للجوال - نقر 5 مرات على الشعار
+  let adminClickCount = 0;
+  function  {
+    adminClickCount++;
+    if (adminClickCount === 5) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0;
+    }
+  }
+
+  // للحاسوب - اختصار Alt + A
+  document.addEventListener("keydown", function(e) {
+    if (e.altKey && e.key.toLowerCase() === 'a') {
+      document.getElementById("adminSecretBtn").style.display = "block";
+    }
+  });
+</script>
+
+
+<!-- زر الأدمن السري -->
+<button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
+
+<script>
+  // الجوال: 5 نقرات على الصفحة
+  let adminClickCount = 0;
+  document.addEventListener("click", function () {
+    adminClickCount++;
+    if (adminClickCount >= 5) {
+      const btn = document.getElementById("adminSecretBtn");
+      if (btn) btn.style.display = "block";
+      adminClickCount = 0;
+    }
+  });
+
+  // الحاسوب: Alt + A
+  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("keydown", function (e) {
+      if (e.altKey && e.key.toLowerCase() === 'a') {
+        const adminBtn = document.getElementById("adminSecretBtn");
+        if (adminBtn) adminBtn.style.display = "block";
+      }
+    });
+  });
+</script>
+
+
+<button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
+
+<script>
+  let adminClickCount = 0;
+  document.addEventListener("click", function () {
+    adminClickCount++;
+    if (adminClickCount >= 5) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0;
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("keydown", function (e) {
+      if (e.altKey && e.key.toLowerCase() === 'a') {
+        const adminBtn = document.getElementById("adminSecretBtn");
+        if (adminBtn) adminBtn.style.display = "block";
+      }
+    });
+  });
+</script>
+
+
+
+<div style="position: fixed; top: 20px; left: 20px; z-index: 999;">
+  <button onclick="logoutUser()" style="padding: 10px 20px; background: #F44336; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">تسجيل الخروج</button>
+</div>
+<script>
+  function logoutUser() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+<script>
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const found = currentUser ? users.find(u => u.username === currentUser.username && u.password === currentUser.password) : null;
+  const isAdmin = currentUser && currentUser.username === "latifking" && currentUser.password === "ding2010";
+
+  if (!currentUser || (!found && !isAdmin)) {
+    window.location.href = "login.html";
+  } else if (found && !found.approved) {
+    window.location.href = "not-approved.html";
+  }
+</script>
+
+
+
+<div style="position: fixed; top: 20px; left: 20px; z-index: 999;">
+  <button onclick="logoutUser()" style="padding: 10px 20px; background: #F44336; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">تسجيل الخروج</button>
+</div>
+<script>
+  function logoutUser() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+<script>
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const isAdmin = currentUser && currentUser.username === "latifking" && currentUser.password === "ding2010";
+
+  if (!currentUser) {
+    window.location.href = "login.html";
+  } else if (!isAdmin) {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const found = users.find(u => u.username === currentUser.username && u.password === currentUser.password);
+    if (!found) {
+      window.location.href = "login.html";
+    } else if (!found.approved) {
+      window.location.href = "not-approved.html";
+    }
+  }
+</script>
+
+
+</html>
+<button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="enterAdmin()">لوحة تحكم الأدمن</button>
+
+<script>
+  function enterAdmin() {
+    const admin = { username: "latifking", password: "ding2010" };
+    localStorage.setItem("currentUser", JSON.stringify(admin));
+    window.location.href = "admin-home.html";
+  }
+
+  let adminClickCount = 0;
+  document.addEventListener("click", function () {
+    adminClickCount++;
+    if (adminClickCount >= 5) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0;
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("keydown", function (e) {
+      if (e.altKey && e.key.toLowerCase() === 'a') {
+        document.getElementById("adminSecretBtn").style.display = "block";
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

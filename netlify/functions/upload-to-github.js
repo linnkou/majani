@@ -10,11 +10,14 @@ exports.handler = async function (event, context) {
     };
   }
 
-  const token = process.env.GITHUB_TOKEN; // أخفي التوكن في إعدادات Netlify
+  const token = process.env.GITHUB_TOKEN;
   const { path, fileName, fileContent } = JSON.parse(event.body);
 
+  // ✅ تشفير المحتوى إلى base64
+  const encodedContent = Buffer.from(fileContent, "utf-8").toString("base64");
+
   const githubApiUrl = `https://api.github.com/repos/linnkou/majani/contents/${path}/${fileName}`;
-  
+
   const res = await fetch(githubApiUrl, {
     method: "PUT",
     headers: {
@@ -24,7 +27,7 @@ exports.handler = async function (event, context) {
     },
     body: JSON.stringify({
       message: `رفع الملف ${fileName} من الواجهة`,
-      content: fileContent  // يجب أن يكون base64
+      content: encodedContent
     })
   });
 

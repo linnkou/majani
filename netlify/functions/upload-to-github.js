@@ -1,40 +1,54 @@
-// netlify/functions/upload-to-github.js
+import React, { useState } from "react";
 
-const fetch = require("node-fetch");
+const UploadToGitHub = () => {
+  const [file, setFile] = useState(null);
+  const [path, setPath] = useState("educationdzwordland");
+  const [result, setResult] = useState(null);
 
-exports.handler = async function (event, context) {
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: "Method Not Allowed"
+  const handleUpload = async () => {
+    if (!file) {
+      alert("يرجى اختيار ملف");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const fileContent = atob(btoa(reader.result)); // إعادة التشفير في الدالة
+      const response = await fetch("/.netlify/functions/upload-to-github", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path,
+          fileName: file.name,
+          fileContent
+        })
+      });
+
+      const data = await response.json();
+      setResult(data);
     };
-  }
-
-  const token = process.env.GITHUB_TOKEN;
-  const { path, fileName, fileContent } = JSON.parse(event.body);
-
-  // ✅ تشفير المحتوى إلى base64
-  const encodedContent = Buffer.from(fileContent, "utf-8").toString("base64");
-
-  const githubApiUrl = `https://api.github.com/repos/linnkou/majani/contents/${path}/${fileName}`;
-
-  const res = await fetch(githubApiUrl, {
-    method: "PUT",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "User-Agent": "netlify-uploader"
-    },
-    body: JSON.stringify({
-      message: `رفع الملف ${fileName} من الواجهة`,
-      content: encodedContent
-    })
-  });
-
-  const data = await res.json();
-
-  return {
-    statusCode: res.status,
-    body: JSON.stringify(data)
+    reader.readAsBinaryString(file);
   };
+
+  return (
+    <div dir="rtl" style={{ fontFamily: "sans-serif" }}>
+      <h2>📤 رفع ملف إلى GitHub</h2>
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <input
+        type="text"
+        placeholder="المسار داخل GitHub (مثال: educationdzwordland/الطور المتوسط)"
+        value={path}
+        onChange={(e) => setPath(e.target.value)}
+      />
+      <button onClick={handleUpload}>رفع</button>
+
+      {result && (
+        <pre style={{ background: "#f0f0f0", padding: "1em" }}>
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      )}
+    </div>
+  );
 };
+
+export default UploadToGitHub;

@@ -247,31 +247,40 @@
 
 <!-- قسم رفع الملفات -->
 <div class="container mx-auto mt-6 px-4">
-<div id="uploadContainer" class="bg-gradient-to-r from-amber-700 to-orange-600 dark:from-amber-900 dark:to-orange-800 rounded-lg shadow-lg p-4 mb-6 relative overflow-hidden">
-  <div class="absolute inset-0 bg-black opacity-10 dark:opacity-30"></div>
-  <div class="relative z-10">
-    <div class="flex items-center mb-3">
-      <i class="fas fa-fire text-yellow-300 text-2xl ml-2 glow-text"></i>
-      <h3 class="font-bold text-xl text-white glow-text">رفع ملف جديد</h3>
-    </div>
-    <div class="flex flex-col sm:flex-row gap-3 items-center">
-      <div class="relative">
-        <input type="file" id="uploadInput" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-20" multiple/>
-        <div class="bg-white/20 text-white px-4 py-2 rounded-lg flex items-center">
-          <i class="fas fa-file-upload ml-2"></i>
-          <span>اختر ملفات</span>
-        </div>
-        <p id="fileNameDisplay" class="text-sm text-white/80 mt-1 h-5 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-xs"></p>
-      </div>
-      <button onclick="uploadFileToCurrent()" id="uploadButton" class="upload-btn text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center relative fire-effect overflow-hidden">
-        <i class="fas fa-cloud-upload-alt ml-2"></i>
-        <span>رفع إلى هذا المجلد</span>
-        <div class="flames"></div>
-      </button>
-    </div>
-    <p class="text-xs text-white/70 mt-3">الملفات المدعومة: doc, docx, pdf, ppt, pptx, xls, xlsx, txt, jpg, png, zip</p>
+  <!-- زر الرجوع إلى الرئيسية -->
+  <div class="mb-4">
+    <a href="index.html" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+      <i class="fas fa-arrow-right ml-2"></i>
+      <span>الرجوع إلى الرئيسية</span>
+    </a>
   </div>
-</div>
+
+  <!-- قسم رفع الملفات الأصلي -->
+  <div id="uploadContainer" class="bg-gradient-to-r from-amber-700 to-orange-600 dark:from-amber-900 dark:to-orange-800 rounded-lg shadow-lg p-4 mb-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black opacity-10 dark:opacity-30"></div>
+    <div class="relative z-10">
+      <div class="flex items-center mb-3">
+        <i class="fas fa-fire text-yellow-300 text-2xl ml-2 glow-text"></i>
+        <h3 class="font-bold text-xl text-white glow-text">رفع ملف جديد</h3>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 items-center">
+        <div class="relative">
+          <input type="file" id="uploadInput" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-20" multiple/>
+          <div class="bg-white/20 text-white px-4 py-2 rounded-lg flex items-center">
+            <i class="fas fa-file-upload ml-2"></i>
+            <span>اختر ملفات</span>
+          </div>
+          <p id="fileNameDisplay" class="text-sm text-white/80 mt-1 h-5 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-xs"></p>
+        </div>
+        <button onclick="uploadFileToCurrent()" id="uploadButton" class="upload-btn text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center relative fire-effect overflow-hidden">
+          <i class="fas fa-cloud-upload-alt ml-2"></i>
+          <span>رفع إلى هذا المجلد</span>
+          <div class="flames"></div>
+        </button>
+      </div>
+      <p class="text-xs text-white/70 mt-3">الملفات المدعومة: doc, docx, pdf, ppt, pptx, xls, xlsx, txt, jpg, png, zip</p>
+    </div>
+  </div>
 </div>
 
 <!-- قسم المحتوى الرئيسي -->

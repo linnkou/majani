@@ -444,20 +444,20 @@
 
     
 <div class="special-nav">
-  <a href="https://latifautomath.netlify.app/" class="math-program" target="_blank">
+  <a href="https://latifautomath.netlify.app/" class="math-program" target="_self">
     <i class="fas fa-robot"></i>
     <span>البرنامج الآلي لرياضيات الرابعة متوسط</span>
     <span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse mt-1">جديد 🔥</span>
   </a>
-  <a href="https://latifanalyses.netlify.app/" class="results-analysis" target="_blank">
+  <a href="https://latifanalyses.netlify.app/" class="results-analysis" target="_self">
     <i class="fas fa-chart-line"></i>
     <span>نتائج التلاميذ</span>
   </a>
-  <a href="https://latifcv.netlify.app/" class="certificates" target="_blank">
+  <a href="https://latifcv.netlify.app/" class="certificates" target="_self">
     <i class="fas fa-certificate"></i>
     <span>صانع الشهادات</span>
   </a>
-  <a href="https://latifcertificate.netlify.app//" class="resumes" target="_blank">
+  <a href="https://latifcertificate.netlify.app//" class="resumes" target="_self">
     <i class="fas fa-id-card"></i>
     <span>السير الذاتية</span>
   </a>
@@ -600,25 +600,35 @@
 <button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
 
 <script>
-  // الجوال: 5 نقرات على الصفحة
+  // متغيرات لتتبع عدد النقرات والتوقيت
   let adminClickCount = 0;
-  document.addEventListener("click", function () {
-    adminClickCount++;
-    if (adminClickCount >= 5) {
-      const btn = document.getElementById("adminSecretBtn");
-      if (btn) btn.style.display = "block";
+  let lastClickTime = 0;
+  const clickTimeout = 2000; // 2 ثانية كحد أقصى بين النقرات
+  
+  document.addEventListener("click", function() {
+    const currentTime = new Date().getTime();
+    
+    // إذا مر أكثر من 2 ثانية منذ آخر نقرة، نعيد العد
+    if (currentTime - lastClickTime > clickTimeout) {
       adminClickCount = 0;
+    }
+    
+    // زيادة العداد وتحديث وقت آخر نقرة
+    adminClickCount++;
+    lastClickTime = currentTime;
+    
+    // إذا وصلنا لـ20 نقرة متتالية
+    if (adminClickCount >= 20) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0; // نعيد العداد للصفر
     }
   });
 
-  // الحاسوب: Alt + A
-  document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("keydown", function (e) {
-      if (e.altKey && e.key.toLowerCase() === 'a') {
-        const adminBtn = document.getElementById("adminSecretBtn");
-        if (adminBtn) adminBtn.style.display = "block";
-      }
-    });
+  // اختصار لوحة المفاتيح Alt + A (يبقى كما هو)
+  document.addEventListener("keydown", function(e) {
+    if (e.altKey && e.key.toLowerCase() === 'a') {
+      document.getElementById("adminSecretBtn").style.display = "block";
+    }
   });
 </script>
 

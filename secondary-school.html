@@ -1455,28 +1455,41 @@
 
 
 
+<!-- زر الأدمن السري -->
 <button id="adminSecretBtn" style="display:none; position:fixed; bottom:20px; right:20px; background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; z-index:999;" onclick="location.href='admin-panel.html'">لوحة تحكم الأدمن</button>
 
 <script>
+  // متغيرات لتتبع عدد النقرات والتوقيت
   let adminClickCount = 0;
-  document.addEventListener("click", function () {
-    adminClickCount++;
-    if (adminClickCount >= 5) {
-      document.getElementById("adminSecretBtn").style.display = "block";
+  let lastClickTime = 0;
+  const clickTimeout = 2000; // 2 ثانية كحد أقصى بين النقرات
+  
+  document.addEventListener("click", function() {
+    const currentTime = new Date().getTime();
+    
+    // إذا مر أكثر من 2 ثانية منذ آخر نقرة، نعيد العد
+    if (currentTime - lastClickTime > clickTimeout) {
       adminClickCount = 0;
+    }
+    
+    // زيادة العداد وتحديث وقت آخر نقرة
+    adminClickCount++;
+    lastClickTime = currentTime;
+    
+    // إذا وصلنا لـ20 نقرة متتالية
+    if (adminClickCount >= 20) {
+      document.getElementById("adminSecretBtn").style.display = "block";
+      adminClickCount = 0; // نعيد العداد للصفر
     }
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("keydown", function (e) {
-      if (e.altKey && e.key.toLowerCase() === 'a') {
-        const adminBtn = document.getElementById("adminSecretBtn");
-        if (adminBtn) adminBtn.style.display = "block";
-      }
-    });
+  // اختصار لوحة المفاتيح Alt + A (يبقى كما هو)
+  document.addEventListener("keydown", function(e) {
+    if (e.altKey && e.key.toLowerCase() === 'a') {
+      document.getElementById("adminSecretBtn").style.display = "block";
+    }
   });
 </script>
-
 
 <body>
 <div style="position: fixed; top: 20px; left: 20px; z-index: 999;">
